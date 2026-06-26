@@ -248,4 +248,4 @@ usernames (컬렉션)
 |------|--------|------|
 | PRD (기능 정의서) | `docs/prd.md` | ✅ 완료 |
 | 사용자 시나리오 | `docs/user-scenarios.md` | ✅ 완료 |
-| 와이어프레임 | `docs/wireframes.md` | 📋 예정 |
+| 와이어프레임 | `docs/wireframes.md` | ✅ 완료 |
