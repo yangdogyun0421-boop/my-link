@@ -1,19 +1,37 @@
-import { Button } from "@/components/ui/button"
+import { dummyLinks } from "@/data/links"
+import { LinkList } from "@/components/profile/link-list"
 
 export default function Page() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
+    <div className="flex min-h-svh items-start justify-center bg-background px-4 py-12 sm:py-16">
+      <main className="w-full max-w-md">
+        {/* 프로필 영역 (목업) */}
+        <section
+          id="profile-section"
+          className="mb-8 flex flex-col items-center gap-2 text-center"
+        >
+          {/* 프로필 이미지 (목업 아바타) */}
+          <div className="flex size-20 items-center justify-center rounded-full bg-muted text-3xl ring-2 ring-border">
+            🧑
+          </div>
+          <h1 className="font-heading text-xl font-bold tracking-tight">
+            양도균
+          </h1>
+          <p className="max-w-xs text-sm text-muted-foreground">
+            안녕하세요! 다양한 링크를 한 곳에 모아두었습니다.
+          </p>
+        </section>
+
+        {/* 링크 목록 */}
+        <section id="links-section">
+          <LinkList links={dummyLinks} />
+        </section>
+
+        {/* 푸터 (와이어프레임 Section 4) */}
+        <footer className="mt-12 text-center text-xs text-muted-foreground">
+          Powered by MyLink
+        </footer>
+      </main>
     </div>
   )
 }
