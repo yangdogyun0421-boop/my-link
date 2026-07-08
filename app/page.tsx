@@ -1,5 +1,4 @@
-import { dummyLinks } from "@/data/links"
-import { LinkList } from "@/components/profile/link-list"
+import { LinksManager } from "@/components/profile/links-manager"
 
 export default function Page() {
   return (
@@ -22,9 +21,9 @@ export default function Page() {
           </p>
         </section>
 
-        {/* 링크 목록 */}
-        <section id="links-section">
-          <LinkList links={dummyLinks} />
+        {/* 링크 목록 (Firestore 연동) */}
+        <section id="links-section" className="w-full">
+          <LinksManager />
         </section>
 
         {/* 푸터 (와이어프레임 Section 4) */}
