@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase";
 import { type Link } from "@/data/links";
 import { LinkList } from "./link-list";
 import { AddLinkForm } from "./add-link-form";
+import { Spinner } from "@/components/ui/spinner";
 
 export function LinksManager() {
   const [links, setLinks] = useState<Link[]>([]);
@@ -27,6 +28,7 @@ export function LinksManager() {
           url: data.url,
           // Firestore Timestamp를 Date로 변환, 로컬 추가 직후에는 createdAt이 null일 수 있음 (서버 시간 계산 전)
           createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate(),
         };
       });
       setLinks(fetchedLinks);
@@ -42,10 +44,7 @@ export function LinksManager() {
       
       {loading ? (
         <div className="py-12 flex flex-col items-center justify-center text-muted-foreground">
-          <svg className="animate-spin h-8 w-8 mb-4 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
+          <Spinner className="h-8 w-8 mb-4 text-primary" />
           <p className="text-sm font-medium">링크를 불러오는 중...</p>
         </div>
       ) : links.length === 0 ? (
