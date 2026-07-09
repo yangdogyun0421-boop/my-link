@@ -1,0 +1,8 @@
+feat: TanStack Query 마이그레이션 및 인라인 프로필 에디터 도입
+
+- 실시간 기능(onSnapshot) 제거 및 @tanstack/react-query 도입
+- useLinks, useUserProfile 등 데이터 패칭을 커스텀 훅으로 완전 분리
+- 프로필 수정 및 링크 CRUD 시 지연 없는(낙관적 업데이트) UI 반영 구현
+- 프로필 설정 모달을 대시보드 내 인라인 편집기(InlineProfileEditor)로 대체하여 UX 개선
+- Shadcn UI sonner 및 toast 적용으로 사용자 알림 UI 통일
+- DeleteModal 복구 및 경고 UI 개선

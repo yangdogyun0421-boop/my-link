@@ -3,9 +3,10 @@ import { LinkCard } from "./link-card"
 
 interface LinkListProps {
   links: Link[]
+  userId: string
 }
 
-export function LinkList({ links }: LinkListProps) {
+export function LinkList({ links, userId }: LinkListProps) {
   if (links.length === 0) {
     return (
       <div
@@ -25,7 +26,7 @@ export function LinkList({ links }: LinkListProps) {
   return (
     <div id="link-list" className="flex flex-col gap-3">
       {links.map((link) => (
-        <LinkCard key={link.id} link={link} />
+        <LinkCard key={link.id} link={link} userId={userId} />
       ))}
     </div>
   )

@@ -1,50 +1,48 @@
 "use client";
 
 import { useState } from "react";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { useAddLink } from "@/hooks/use-links";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
 
-export function AddLinkForm() {
+interface AddLinkFormProps {
+  userId: string;
+  onCancel: () => void;
+}
+
+export function AddLinkForm({ userId, onCancel }: AddLinkFormProps) {
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const addLink = useAddLink(userId);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!title.trim() || !url.trim()) {
-      setError("링크 제목과 URL을 모두 입력해주세요.");
+      toast.error("제목과 URL을 모두 입력해주세요.");
       return;
     }
-
-    // 간단한 URL 검증
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-      setError("URL은 http:// 또는 https:// 로 시작해야 합니다.");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
 
     try {
-      const linksRef = collection(db, "users/anonymous/links");
-      await addDoc(linksRef, {
-        title: title.trim(),
-        url: url.trim(),
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+      new URL(url.startsWith('http') ? url : `https://${url}`);
+      const finalUrl = url.startsWith('http') ? url : `https://${url}`;
+      
+      // 즉시 닫기
+      onCancel();
+      
+      addLink.mutate({ title: title.trim(), url: finalUrl }, {
+        onSuccess: () => {
+          toast.success("링크가 추가되었습니다.");
+        },
+        onError: (error) => {
+          console.error("링크 추가 오류:", error);
+          toast.error("링크 추가 중 오류가 발생했습니다.");
+        }
       });
-      // 폼 초기화
-      setTitle("");
-      setUrl("");
-    } catch (err: any) {
-      console.error("Error adding link: ", err);
-      setError("링크를 추가하는 데 실패했습니다.");
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      toast.error("올바른 URL 형식이 아닙니다.");
     }
   };
 
@@ -60,26 +58,27 @@ export function AddLinkForm() {
               onChange={(e) => setTitle(e.target.value)}
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               required
-              disabled={loading}
+              disabled={addLink.isPending}
             />
             <input
               type="url"
               placeholder="URL (예: https://github.com/)"
               value={url}
-              onChange={(e) => {
-                setUrl(e.target.value);
-                setError(null);
-              }}
+              onChange={(e) => setUrl(e.target.value)}
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               required
-              disabled={loading}
+              disabled={addLink.isPending}
             />
-            {error && <p className="text-sm text-red-500">{error}</p>}
           </div>
-          <Button type="submit" disabled={loading}>
-            {loading && <Spinner data-icon="inline-start" />}
-            {loading ? "저장 중..." : "링크 추가"}
-          </Button>
+          <div className="flex gap-2 justify-end pt-2">
+            <Button type="button" variant="outline" onClick={onCancel} disabled={addLink.isPending}>
+              취소
+            </Button>
+            <Button type="submit" disabled={!title.trim() || !url.trim() || addLink.isPending}>
+              {addLink.isPending ? <Spinner className="mr-2 h-4 w-4" /> : null}
+              추가
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>
